@@ -145,11 +145,14 @@ def main() -> None:
 
     client = CifarClient(model, train_generator)
 
+    ip_address = '192.168.0.21'  # here you should write the server ip-address
+    server_address=ip_address + ':8080'
+
     fl.client.start_numpy_client(
-        server_address="127.0.0.1:8080",
-        # server_address="140.118.122.247:8080",
+        # server_address="127.0.0.1:8080",
+        server_address=server_address,
         client=client,
-        root_certificates=Path(".cache/certificates/ca.crt").read_bytes(),
+        # root_certificates=Path(".cache/certificates/ca.crt").read_bytes(),
     )
 
 

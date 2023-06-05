@@ -60,11 +60,11 @@ def main() -> None:
         server_address="0.0.0.0:8080",
         config=fl.server.ServerConfig(num_rounds=10),
         strategy=strategy,
-        certificates=(
-            Path(".cache/certificates/ca.crt").read_bytes(),
-            Path(".cache/certificates/server.pem").read_bytes(),
-            Path(".cache/certificates/server.key").read_bytes(),
-        ),
+        # certificates=(
+        #     Path(".cache/certificates/ca.crt").read_bytes(),
+        #     Path(".cache/certificates/server.pem").read_bytes(),
+        #     Path(".cache/certificates/server.key").read_bytes(),
+        # ),
     )
 
 
