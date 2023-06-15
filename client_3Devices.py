@@ -155,7 +155,10 @@ def main() -> None:
     fl.client.start_numpy_client(
         # server_address="127.0.0.1:8080",
         server_address=server_address,
+        # server_address="127.0.0.1:8080",
+        server_address=server_address,
         client=client,
+        # root_certificates=Path(".cache/certificates/ca.crt").read_bytes(),
         # root_certificates=Path(".cache/certificates/ca.crt").read_bytes(),
     )
 
