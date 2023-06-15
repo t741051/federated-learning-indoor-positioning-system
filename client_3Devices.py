@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 import flwr as fl
 from keras.applications.mobilenet import MobileNet
+from keras.applications.inception_resnet_v2 import InceptionResNetV2
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
 
@@ -95,8 +96,9 @@ def main() -> None:
 
     # Load and compile Keras model
 
-    base_model = MobileNet(input_shape=(
-        75, 75, 3), include_top=False, weights='imagenet')
+    # base_model = MobileNet(input_shape=(
+    #     75, 75, 3), include_top=False, weights='imagenet')
+    base_model = InceptionResNetV2(input_shape=(75, 75, 3), include_top=False, weights='imagenet')
 
     # 添加自定義的輸出層
     x = base_model.output
@@ -124,9 +126,11 @@ def main() -> None:
         height_shift_range=0.2,  # 随机竖直平移的范围
         shear_range=0.1,  # 剪切强度
         zoom_range=0.2,  # 随机缩放范围
-        horizontal_flip=False,  # 随机水平翻转
+        horizontal_flip=True,  # 随机水平翻转
+        vertical_flip=True,  # 随机水平翻转
         fill_mode='nearest'  # 填充方式
     )
+
     if (args.partition == 0):
         train_dir = 'Dataset_3Devices/Nokia/train/'
     elif (args.partition == 1):
@@ -145,11 +149,14 @@ def main() -> None:
 
     client = CifarClient(model, train_generator)
 
+    ip_address = '140.118.122.247'  # here you should write the server ip-address
+    server_address=ip_address + ':8080'
+
     fl.client.start_numpy_client(
-        server_address="127.0.0.1:8080",
-        # server_address="140.118.122.247:8080",
+        # server_address="127.0.0.1:8080",
+        server_address=server_address,
         client=client,
-        root_certificates=Path(".cache/certificates/ca.crt").read_bytes(),
+        # root_certificates=Path(".cache/certificates/ca.crt").read_bytes(),
     )
 
 

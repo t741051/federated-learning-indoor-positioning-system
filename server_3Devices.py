@@ -4,6 +4,7 @@ import flwr as fl
 import numpy as np
 import tensorflow as tf
 from keras.applications.mobilenet import MobileNet
+from keras.applications.inception_resnet_v2 import InceptionResNetV2
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
 
@@ -13,8 +14,9 @@ def main() -> None:
     # 1. server-side parameter initialization
     # 2. server-side parameter evaluation
 
-    base_model = MobileNet(input_shape=(
-        75, 75, 3), include_top=False, weights='imagenet')
+    # base_model = MobileNet(input_shape=(
+    #     75, 75, 3), include_top=False, weights='imagenet')
+    base_model = InceptionResNetV2(input_shape=(75, 75, 3), include_top=False, weights='imagenet')
 
     # 添加自定義的輸出層
     x = base_model.output
@@ -45,6 +47,15 @@ def main() -> None:
     #     initial_parameters=fl.common.ndarrays_to_parameters(
     #         model.get_weights()),
     # )
+    # strategy = fl.server.strategy.FedAvg(
+    #     fraction_fit=0.3,
+    #     min_fit_clients=3,
+    #     min_available_clients=3,
+    #     evaluate_fn=get_evaluate_fn(model),
+    #     on_fit_config_fn=fit_config,
+    #     initial_parameters=fl.common.ndarrays_to_parameters(
+    #         model.get_weights()),
+    # )
     strategy = fl.server.strategy.FedAvg(
         fraction_fit=0.3,
         min_fit_clients=3,
@@ -60,11 +71,11 @@ def main() -> None:
         server_address="0.0.0.0:8080",
         config=fl.server.ServerConfig(num_rounds=10),
         strategy=strategy,
-        certificates=(
-            Path(".cache/certificates/ca.crt").read_bytes(),
-            Path(".cache/certificates/server.pem").read_bytes(),
-            Path(".cache/certificates/server.key").read_bytes(),
-        ),
+        # certificates=(
+        #     Path(".cache/certificates/ca.crt").read_bytes(),
+        #     Path(".cache/certificates/server.pem").read_bytes(),
+        #     Path(".cache/certificates/server.key").read_bytes(),
+        # ),
     )
 
 
